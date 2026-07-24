@@ -1,0 +1,48 @@
+
+<svg width="340" height="90" viewBox="0 0 340 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="devflowGradient" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6C63FF"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon -->
+  <g transform="translate(5,10)">
+    <!-- Outer D -->
+    <path
+      d="M8 8
+         C32 8 50 22 50 35
+         C50 48 32 62 8 62
+         L8 48
+         C22 48 34 42 34 35
+         C34 28 22 22 8 22
+         Z"
+      fill="url(#devflowGradient)"
+    />
+
+    <!-- Inner Flow Shape -->
+    <path
+      d="M20 20
+         L31 20
+         C40 20 46 27 46 35
+         C46 43 40 50 31 50
+         L20 50
+         C28 45 31 40 31 35
+         C31 30 28 25 20 20Z"
+      fill="white"
+      opacity="0.95"
+    />
+  </g>
+
+  <!-- Text -->
+  <text
+    x="75"
+    y="55"
+    font-family="Inter, Segoe UI, Arial, sans-serif"
+    font-size="30"
+    font-weight="700"
+    fill="#111827">
+    DevFlow
+  </text>
+</svg>
