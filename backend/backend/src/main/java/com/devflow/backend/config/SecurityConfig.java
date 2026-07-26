@@ -27,6 +27,7 @@ public class SecurityConfig{
                         "/api/register"
                 )
                 .permitAll()
+
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

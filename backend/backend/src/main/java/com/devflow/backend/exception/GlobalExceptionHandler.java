@@ -20,5 +20,25 @@ public class GlobalExceptionHandler {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
         }
 
+        @ExceptionHandler(ProjectNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleProjectNotFound(ProjectNotFoundException exception){
+            ErrorResponse errorResponse=new ErrorResponse();
+            errorResponse.setMessage(exception.getMessage());
+            errorResponse.setStatus(HttpStatus.CONFLICT.value());
+            errorResponse.setTimeStamp(LocalDateTime.now());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTaskNotFound(TaskNotFoundException exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 }
 
