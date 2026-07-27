@@ -1,5 +1,6 @@
 package com.devflow.backend.exception;
 
+import com.devflow.backend.dto.CommentResponse;
 import com.devflow.backend.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTaskNotFound(TaskNotFoundException exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    @ExceptionHandler(NoCommentFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoCommentFound(NoCommentFoundException exception){
         ErrorResponse errorResponse=new ErrorResponse();
         errorResponse.setMessage(exception.getMessage());
         errorResponse.setStatus(HttpStatus.CONFLICT.value());
