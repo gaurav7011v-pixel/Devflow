@@ -2,6 +2,7 @@ package com.devflow.backend.exception;
 
 import com.devflow.backend.dto.CommentResponse;
 import com.devflow.backend.dto.ErrorResponse;
+import com.devflow.backend.entity.Label;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,6 +53,16 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(CheckListItemNotFound.class)
     public ResponseEntity<ErrorResponse> handleCheckListItemNotFound(CheckListItemNotFound exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(LabelNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleLabelNotFound(LabelNotFoundException exception){
         ErrorResponse errorResponse=new ErrorResponse();
         errorResponse.setMessage(exception.getMessage());
         errorResponse.setStatus(HttpStatus.NOT_FOUND.value());

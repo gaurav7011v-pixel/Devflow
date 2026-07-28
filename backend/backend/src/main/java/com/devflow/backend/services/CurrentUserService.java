@@ -1,10 +1,7 @@
 package com.devflow.backend.services;
 
 import com.devflow.backend.entity.*;
-import com.devflow.backend.exception.CheckListItemNotFound;
-import com.devflow.backend.exception.NoCommentFoundException;
-import com.devflow.backend.exception.ProjectNotFoundException;
-import com.devflow.backend.exception.TaskNotFoundException;
+import com.devflow.backend.exception.*;
 import com.devflow.backend.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,13 +15,15 @@ public class CurrentUserService {
     private final TaskRepository taskRepository;
     private final CommentRepository commentRepository;
     private final CheckListRepository checkListRepository;
+    private final LabelRepository labelRepository;
 
-    public CurrentUserService(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentRepository commentRepository, CheckListRepository checkListRepository) {
+    public CurrentUserService(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentRepository commentRepository, CheckListRepository checkListRepository, LabelRepository labelRepository) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.commentRepository = commentRepository;
         this.checkListRepository = checkListRepository;
+        this.labelRepository = labelRepository;
     }
 
     public User getCurrentUser(){
@@ -60,6 +59,12 @@ public class CurrentUserService {
         User currentUser=getCurrentUser();
         return checkListRepository.findByIdAndTaskProjectOwner(checkListId,currentUser).orElseThrow(
                 ()->new CheckListItemNotFound("CheckList item not found!")
+        );
+    }
+    public Label getLabelByByIdAndOwner(Long labelId){
+        User currentUser=getCurrentUser();
+        return labelRepository.findByIdAndOwner(labelId,currentUser).orElseThrow(
+                ()->new LabelNotFoundException("Label not found!")
         );
     }
 }
