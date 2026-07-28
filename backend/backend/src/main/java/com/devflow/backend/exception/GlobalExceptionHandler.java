@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ErrorResponse> handleProjectNotFound(ProjectNotFoundException exception){
             ErrorResponse errorResponse=new ErrorResponse();
             errorResponse.setMessage(exception.getMessage());
-            errorResponse.setStatus(HttpStatus.CONFLICT.value());
+            errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
             errorResponse.setTimeStamp(LocalDateTime.now());
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleTaskNotFound(TaskNotFoundException exception){
         ErrorResponse errorResponse=new ErrorResponse();
         errorResponse.setMessage(exception.getMessage());
-        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
         errorResponse.setTimeStamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -45,7 +45,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleNoCommentFound(NoCommentFoundException exception){
         ErrorResponse errorResponse=new ErrorResponse();
         errorResponse.setMessage(exception.getMessage());
-        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    @ExceptionHandler(CheckListItemNotFound.class)
+    public ResponseEntity<ErrorResponse> handleCheckListItemNotFound(CheckListItemNotFound exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
         errorResponse.setTimeStamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);

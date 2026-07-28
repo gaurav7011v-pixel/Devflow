@@ -1,16 +1,11 @@
 package com.devflow.backend.services;
 
-import com.devflow.backend.entity.Comment;
-import com.devflow.backend.entity.Project;
-import com.devflow.backend.entity.Task;
-import com.devflow.backend.entity.User;
+import com.devflow.backend.entity.*;
+import com.devflow.backend.exception.CheckListItemNotFound;
 import com.devflow.backend.exception.NoCommentFoundException;
 import com.devflow.backend.exception.ProjectNotFoundException;
 import com.devflow.backend.exception.TaskNotFoundException;
-import com.devflow.backend.repository.CommentRepository;
-import com.devflow.backend.repository.ProjectRepository;
-import com.devflow.backend.repository.TaskRepository;
-import com.devflow.backend.repository.UserRepository;
+import com.devflow.backend.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,12 +17,14 @@ public class CurrentUserService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
     private final CommentRepository commentRepository;
+    private final CheckListRepository checkListRepository;
 
-    public CurrentUserService(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentRepository commentRepository) {
+    public CurrentUserService(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentRepository commentRepository, CheckListRepository checkListRepository) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.commentRepository = commentRepository;
+        this.checkListRepository = checkListRepository;
     }
 
     public User getCurrentUser(){
@@ -58,5 +55,11 @@ public class CurrentUserService {
 
         return commentRepository.findByIdAndAuthor(commentId,currentUser)
                 .orElseThrow(()->new NoCommentFoundException("No comment found"));
+    }
+    public CheckList getCheckListByIdAndOwner(Long checkListId){
+        User currentUser=getCurrentUser();
+        return checkListRepository.findByIdAndTaskProjectOwner(checkListId,currentUser).orElseThrow(
+                ()->new CheckListItemNotFound("CheckList item not found!")
+        );
     }
 }
