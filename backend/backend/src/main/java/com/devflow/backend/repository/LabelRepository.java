@@ -1,6 +1,7 @@
 package com.devflow.backend.repository;
 
 import com.devflow.backend.entity.Label;
+import com.devflow.backend.entity.Task;
 import com.devflow.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

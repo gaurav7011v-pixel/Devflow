@@ -12,4 +12,7 @@ public interface LabelService {
     List<LabelResponse> getAllLabels();
     LabelResponse getLabelById(Long labelId);
     void deleteLabel(Long labelId);
+    LabelResponse attachLabelToTask(Long taskId,Long labelId);
+    void removeLabelFromTask(Long taskId,Long labelId);
+    List<LabelResponse> getLabelsByTask(Long taskId);
 }

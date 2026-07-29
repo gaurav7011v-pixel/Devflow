@@ -48,4 +48,23 @@ public class LabelController{
         labelService.deleteLabel(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/tasks/{taskId}/labels/{labelId}")
+    public ResponseEntity<LabelResponse> attackLabelsToTask(@PathVariable Long taskId,@PathVariable Long labelId){
+        LabelResponse response=labelService.attachLabelToTask(taskId,labelId);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/tasks/{taskId}/labels/{labelId}")
+    public ResponseEntity<Void> removeLabelFromTask(@PathVariable Long taskId,@PathVariable Long labelId){
+        labelService.removeLabelFromTask(taskId,labelId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/tasks/{taskId}/labels")
+    public ResponseEntity<List<LabelResponse>> getLabelsByTask(@PathVariable Long taskId){
+        List<LabelResponse> response =labelService.getLabelsByTask(taskId);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 }
