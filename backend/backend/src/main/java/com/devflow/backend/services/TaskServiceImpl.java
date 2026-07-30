@@ -1,13 +1,14 @@
 package com.devflow.backend.services;
 
 import com.devflow.backend.dto.CreateTaskRequest;
+import com.devflow.backend.dto.MemberResponse;
 import com.devflow.backend.dto.TaskResponse;
 import com.devflow.backend.dto.UpdateTaskRequest;
 import com.devflow.backend.entity.Project;
 import com.devflow.backend.entity.Task;
 import com.devflow.backend.entity.User;
-import com.devflow.backend.repository.ProjectRepository;
 import com.devflow.backend.repository.TaskRepository;
+import com.devflow.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -76,6 +77,33 @@ public class TaskServiceImpl implements TaskService{
         taskRepository.delete(task);
     }
 
+    @Override
+    public MemberResponse assignMemberToTask(Long taskId, Long userId) {
+        Task task=currentUserService.getTaskByIdAndOwner(taskId);
+        User user=currentUserService.getUserById(userId);
+
+        if (!task.getMembers().contains(user)) {
+            task.getMembers().add(user);
+        }
+        taskRepository.save(task);
+        return mapToMemberResponse(user);
+    }
+
+    @Override
+    public void removeMemberFromTask(Long taskId, Long userId) {
+        Task task=currentUserService.getTaskByIdAndOwner(taskId);
+        User user=currentUserService.getUserById(userId);
+
+        task.getMembers().remove(user);
+        taskRepository.save(task);
+    }
+
+    @Override
+    public List<MemberResponse> getTaskMembers(Long taskId) {
+        Task task=currentUserService.getTaskByIdAndOwner(taskId);
+        return task.getMembers().stream().map(this::mapToMemberResponse).toList();
+    }
+
     private TaskResponse mapToTaskResponse(Task task){
         TaskResponse taskResponse=new TaskResponse();
         taskResponse.setId(task.getId());
@@ -85,6 +113,13 @@ public class TaskServiceImpl implements TaskService{
         taskResponse.setPriority(task.getPriority());
         taskResponse.setDueDate(task.getDueDate());
         return taskResponse;
+    }
+    private MemberResponse mapToMemberResponse(User user){
+        MemberResponse response=new MemberResponse();
+        response.setId(user.getId());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+        return response;
     }
 
 }

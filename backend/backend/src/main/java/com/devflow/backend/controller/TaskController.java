@@ -1,9 +1,6 @@
 package com.devflow.backend.controller;
 
-import com.devflow.backend.dto.CreateTaskRequest;
-import com.devflow.backend.dto.TaskResponse;
-import com.devflow.backend.dto.UpdateProjectRequest;
-import com.devflow.backend.dto.UpdateTaskRequest;
+import com.devflow.backend.dto.*;
 import com.devflow.backend.services.TaskService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import jakarta.validation.Valid;
@@ -58,5 +55,24 @@ public class TaskController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/tasks/{taskId}/members/{userId}")
+    public ResponseEntity<MemberResponse> assignMemberToTask(@PathVariable Long taskId, @PathVariable Long userId){
+        MemberResponse response=taskService.assignMemberToTask(taskId,userId);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/tasks/{taskId}/members/{userId}")
+    public ResponseEntity<Void> removeMemberFromTask(@PathVariable Long taskId,@PathVariable Long userId){
+        taskService.removeMemberFromTask(taskId,userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/tasks/{taskId}/members")
+    public ResponseEntity<List<MemberResponse>> getTaskMembers(@PathVariable Long taskId){
+            List<MemberResponse> response =taskService.getTaskMembers(taskId);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -69,6 +70,15 @@ public class GlobalExceptionHandler {
         errorResponse.setTimeStamp(LocalDateTime.now());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException exception){
+            ErrorResponse errorResponse=new ErrorResponse();
+            errorResponse.setMessage(exception.getMessage());
+            errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            errorResponse.setTimeStamp(LocalDateTime.now());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }
 

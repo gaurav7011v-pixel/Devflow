@@ -67,4 +67,7 @@ public class CurrentUserService {
                 ()->new LabelNotFoundException("Label not found!")
         );
     }
+    public User getUserById(Long userId){
+        return userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+    }
 }

@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface ProjectRepository extends JpaRepository<Project,Long> {
     Optional<Project> findByIdAndOwner(Long id, User owner);
     List<Project> findByOwner(User owner);
+
+    long countByOwner(User owner);
 }
+

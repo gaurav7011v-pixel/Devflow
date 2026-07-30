@@ -9,8 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -36,4 +36,8 @@ public class User {
     private LocalDateTime updatedAt;
 
     private String profileImage;
+
+    @ManyToMany(mappedBy = "members")
+    private List<Task> assignedTasks=new ArrayList<>();
+
 }

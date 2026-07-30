@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -44,4 +42,12 @@ public class Task {
             inverseJoinColumns = @JoinColumn(name = "label_id")
     )
     private List<Label> labels = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name="task_members",
+            joinColumns=@JoinColumn(name="task_id"),
+            inverseJoinColumns=@JoinColumn(name="user_id")
+    )
+    private List<User> members =new ArrayList<>();
 }
