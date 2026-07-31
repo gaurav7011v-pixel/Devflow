@@ -3,13 +3,16 @@ package com.devflow.backend.services;
 import com.devflow.backend.dto.DashboardSummaryResponse;
 import com.devflow.backend.dto.ProjectOverviewResponse;
 import com.devflow.backend.dto.TaskSummaryResponse;
+import com.devflow.backend.dto.UpcomingDeadlineResponse;
 import com.devflow.backend.entity.Project;
 import com.devflow.backend.entity.Status;
+import com.devflow.backend.entity.Task;
 import com.devflow.backend.entity.User;
 import com.devflow.backend.repository.ProjectRepository;
 import com.devflow.backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -94,6 +97,26 @@ public class DashBoardServiceImpl implements DashBoardService{
         return response;
 
     }
+
+    @Override
+    public List<UpcomingDeadlineResponse> getUpcomingDeadLines() {
+        User owner=currentUserService.getCurrentUser();
+        List<Task> tasks=taskRepository.findTop5ByProjectOwnerAndStatusNotAndDueDateGreaterThanEqualOrderByDueDateAsc(owner, Status.COMPLETED, LocalDate.now());
+        return tasks.stream().map(this::mapToUpcomingDeadlineResponse).toList();
+    }
+
+    private UpcomingDeadlineResponse mapToUpcomingDeadlineResponse(Task task) {
+        UpcomingDeadlineResponse response = new UpcomingDeadlineResponse();
+
+        response.setId(task.getId());
+        response.setTitle(task.getTitle());
+        response.setProjectName(task.getProject().getName());
+        response.setPriority(task.getPriority());
+        response.setDeadline(task.getDueDate());
+
+        return response;
+    }
+
 
 
 

@@ -3,6 +3,7 @@ package com.devflow.backend.controller;
 import com.devflow.backend.dto.DashboardSummaryResponse;
 import com.devflow.backend.dto.ProjectOverviewResponse;
 import com.devflow.backend.dto.TaskSummaryResponse;
+import com.devflow.backend.dto.UpcomingDeadlineResponse;
 import com.devflow.backend.services.DashBoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -39,4 +40,9 @@ public class DashBoardController {
         return  ResponseEntity.ok(response);
     }
 
+    @GetMapping("/dashboard/upcoming-deadlines")
+    public ResponseEntity<List<UpcomingDeadlineResponse>> getUpcomingDeadlines(){
+        List<UpcomingDeadlineResponse> response=dashBoardService.getUpcomingDeadLines();
+        return  ResponseEntity.ok(response);
+    }
 }

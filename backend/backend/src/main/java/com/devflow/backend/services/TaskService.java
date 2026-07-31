@@ -1,9 +1,6 @@
 package com.devflow.backend.services;
 
-import com.devflow.backend.dto.CreateTaskRequest;
-import com.devflow.backend.dto.MemberResponse;
-import com.devflow.backend.dto.TaskResponse;
-import com.devflow.backend.dto.UpdateTaskRequest;
+import com.devflow.backend.dto.*;
 
 
 import java.util.List;
@@ -24,4 +21,5 @@ public interface TaskService {
      void removeMemberFromTask(Long taskId, Long userId);
 
      List<MemberResponse> getTaskMembers(Long taskId);
+
 }
