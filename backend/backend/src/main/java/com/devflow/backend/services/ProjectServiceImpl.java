@@ -2,9 +2,12 @@ package com.devflow.backend.services;
 
 import com.devflow.backend.dto.CreateProjectRequest;
 import com.devflow.backend.dto.ProjectResponse;
+import com.devflow.backend.dto.RecentActivityResponse;
 import com.devflow.backend.dto.UpdateProjectRequest;
+import com.devflow.backend.entity.ActivityAction;
 import com.devflow.backend.entity.Project;
 import com.devflow.backend.entity.User;
+import com.devflow.backend.repository.ActivityRepository;
 import com.devflow.backend.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -14,10 +17,11 @@ import java.util.List;
 public class ProjectServiceImpl implements ProjectService{
     private final CurrentUserService currentUserService;
     private final ProjectRepository projectRepository;
-
-    public ProjectServiceImpl(CurrentUserService currentUserService, ProjectRepository projectRepository) {
+    private final ActivityService activityService;
+    public ProjectServiceImpl(CurrentUserService currentUserService, ProjectRepository projectRepository, ActivityService activityService) {
         this.currentUserService = currentUserService;
         this.projectRepository = projectRepository;
+        this.activityService = activityService;
     }
 
     @Override
@@ -37,6 +41,10 @@ public class ProjectServiceImpl implements ProjectService{
         project.setOwner(owner);
         Project savedProject = projectRepository.save(project);
 
+        activityService.log(
+                ActivityAction.PROJECT_CREATED,
+                "Created project " + savedProject.getName()
+        );
         return mapToProjectResponse(savedProject);
     }
 
@@ -69,14 +77,21 @@ public class ProjectServiceImpl implements ProjectService{
         project.setUpdatedAt(LocalDateTime.now());
 
         Project updatedProject=projectRepository.save(project);
+
+        activityService.log(
+                ActivityAction.PROJECT_UPDATED,
+                updatedProject.getName() +"updated"
+        );
         return mapToProjectResponse(updatedProject);
     }
 
     @Override
     public void deleteProject(Long id) {
         Project project =currentUserService.getProjectByIdAndOwner(id);
-
         projectRepository.delete(project);
+
+        activityService.log(ActivityAction.PROJECT_DELETED, project.getName()+" deleted");
+
     }
 
     private ProjectResponse mapToProjectResponse(Project project) {

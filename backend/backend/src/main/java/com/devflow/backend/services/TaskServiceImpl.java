@@ -1,10 +1,7 @@
 package com.devflow.backend.services;
 
 import com.devflow.backend.dto.*;
-import com.devflow.backend.entity.Project;
-import com.devflow.backend.entity.Status;
-import com.devflow.backend.entity.Task;
-import com.devflow.backend.entity.User;
+import com.devflow.backend.entity.*;
 import com.devflow.backend.repository.TaskRepository;
 import com.devflow.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -16,10 +13,12 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService{
     private final TaskRepository taskRepository;
     private final CurrentUserService currentUserService;
+    private final ActivityService activityService;
 
-    public TaskServiceImpl(TaskRepository taskRepository, CurrentUserService currentUserService) {
+    public TaskServiceImpl(TaskRepository taskRepository, CurrentUserService currentUserService, ActivityService activityService) {
         this.taskRepository = taskRepository;
         this.currentUserService = currentUserService;
+        this.activityService = activityService;
     }
 
     @Override
@@ -36,6 +35,8 @@ public class TaskServiceImpl implements TaskService{
         task.setUpdatedAt(LocalDateTime.now());
 
         Task savedTask=taskRepository.save(task);
+
+        activityService.log(ActivityAction.TASK_CREATED,"Created task "+ savedTask.getTitle());
         return mapToTaskResponse(savedTask);
     }
 
@@ -50,6 +51,8 @@ public class TaskServiceImpl implements TaskService{
         task.setUpdatedAt(LocalDateTime.now());
 
         Task savedTask=taskRepository.save(task);
+        activityService.log(ActivityAction.TASK_UPDATED,"Updated task "+ savedTask.getTitle());
+
         return mapToTaskResponse(savedTask);
     }
 
@@ -73,6 +76,9 @@ public class TaskServiceImpl implements TaskService{
     public void deleteTask(Long id) {
         Task task=currentUserService.getTaskByIdAndOwner(id);
         taskRepository.delete(task);
+
+        activityService.log(ActivityAction.TASK_DELETED,currentUserService.getCurrentUser()+" deleted"+task.getTitle());
+
     }
 
     @Override
@@ -83,7 +89,9 @@ public class TaskServiceImpl implements TaskService{
         if (!task.getMembers().contains(user)) {
             task.getMembers().add(user);
         }
-        taskRepository.save(task);
+        Task savedTask=taskRepository.save(task);
+        activityService.log(ActivityAction.MEMBER_ASSIGNED,"Assigned "+ user.getName() +" to task "+ savedTask.getTitle());
+
         return mapToMemberResponse(user);
     }
 
@@ -93,7 +101,10 @@ public class TaskServiceImpl implements TaskService{
         User user=currentUserService.getUserById(userId);
 
         task.getMembers().remove(user);
-        taskRepository.save(task);
+       Task savedTask= taskRepository.save(task);
+
+        activityService.log(ActivityAction.MEMBER_REMOVED,user.getName()+" removed from "+ savedTask.getTitle());
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.devflow.backend.services;
 import com.devflow.backend.dto.CheckListResponse;
 import com.devflow.backend.dto.CreateCheckListRequest;
 import com.devflow.backend.dto.UpdateCheckListRequest;
+import com.devflow.backend.entity.ActivityAction;
 import com.devflow.backend.entity.CheckList;
 import com.devflow.backend.entity.Task;
 import com.devflow.backend.repository.CheckListRepository;
@@ -14,10 +15,12 @@ import java.util.List;
 public class CheckListServiceImpl implements CheckListService{
     private final CurrentUserService currentUserService;
     private final CheckListRepository checkListRepository;
+    private final ActivityService activityService;
 
-    public CheckListServiceImpl(CurrentUserService currentUserService, CheckListRepository checkListRepository) {
+    public CheckListServiceImpl(CurrentUserService currentUserService, CheckListRepository checkListRepository, ActivityService activityService) {
         this.currentUserService = currentUserService;
         this.checkListRepository = checkListRepository;
+        this.activityService = activityService;
     }
 
     @Override
@@ -29,6 +32,9 @@ public class CheckListServiceImpl implements CheckListService{
         checkList.setCompleted(request.getCompleted());
 
         CheckList savedList=checkListRepository.save(checkList);
+
+        activityService.log(ActivityAction.CHECKLIST_CREATED,savedList.getTitle()+" created");
+
         return mapToCheckListResponse(savedList);
     }
 
@@ -47,6 +53,14 @@ public class CheckListServiceImpl implements CheckListService{
         checkList.setTitle(request.getTitle());
         checkList.setCompleted(request.getCompleted());
         CheckList savedList=checkListRepository.save(checkList);
+
+        if(Boolean.TRUE.equals(request.getCompleted())
+                && !Boolean.TRUE.equals(checkList.getCompleted())) {
+
+            activityService.log(ActivityAction.CHECKLIST_COMPLETED,checkList.getTitle()+" completed");
+
+        }
+
         return mapToCheckListResponse(savedList);
     }
 

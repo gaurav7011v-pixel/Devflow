@@ -1,9 +1,6 @@
 package com.devflow.backend.controller;
 
-import com.devflow.backend.dto.DashboardSummaryResponse;
-import com.devflow.backend.dto.ProjectOverviewResponse;
-import com.devflow.backend.dto.TaskSummaryResponse;
-import com.devflow.backend.dto.UpcomingDeadlineResponse;
+import com.devflow.backend.dto.*;
 import com.devflow.backend.services.DashBoardService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,4 +42,11 @@ public class DashBoardController {
         List<UpcomingDeadlineResponse> response=dashBoardService.getUpcomingDeadLines();
         return  ResponseEntity.ok(response);
     }
+
+    @GetMapping("/dashboard/recent-activities")
+    public ResponseEntity<List<RecentActivityResponse>> getRecentActivities(){
+        List<RecentActivityResponse> response=dashBoardService.getRecentActivity();
+        return  ResponseEntity.ok(response);
+    }
+
 }

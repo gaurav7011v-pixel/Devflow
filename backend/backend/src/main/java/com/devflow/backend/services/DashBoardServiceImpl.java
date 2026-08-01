@@ -1,13 +1,8 @@
 package com.devflow.backend.services;
 
-import com.devflow.backend.dto.DashboardSummaryResponse;
-import com.devflow.backend.dto.ProjectOverviewResponse;
-import com.devflow.backend.dto.TaskSummaryResponse;
-import com.devflow.backend.dto.UpcomingDeadlineResponse;
-import com.devflow.backend.entity.Project;
-import com.devflow.backend.entity.Status;
-import com.devflow.backend.entity.Task;
-import com.devflow.backend.entity.User;
+import com.devflow.backend.dto.*;
+import com.devflow.backend.entity.*;
+import com.devflow.backend.repository.ActivityRepository;
 import com.devflow.backend.repository.ProjectRepository;
 import com.devflow.backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -20,10 +15,12 @@ public class DashBoardServiceImpl implements DashBoardService{
     private final ProjectRepository projectRepository;
     private final CurrentUserService currentUserService;
     private final TaskRepository taskRepository;
-    public DashBoardServiceImpl(ProjectRepository projectRepository, CurrentUserService currentUserService, TaskRepository taskRepository) {
+    private final ActivityRepository activityRepository;
+    public DashBoardServiceImpl(ProjectRepository projectRepository, CurrentUserService currentUserService, TaskRepository taskRepository, ActivityRepository activityRepository) {
         this.projectRepository = projectRepository;
         this.currentUserService = currentUserService;
         this.taskRepository = taskRepository;
+        this.activityRepository = activityRepository;
     }
 
     @Override
@@ -105,6 +102,13 @@ public class DashBoardServiceImpl implements DashBoardService{
         return tasks.stream().map(this::mapToUpcomingDeadlineResponse).toList();
     }
 
+    @Override
+    public List<RecentActivityResponse> getRecentActivity() {
+        User user=currentUserService.getCurrentUser();
+        List<Activity> activities=activityRepository.findTop10ByUserOrderByCreatedAtDesc(user);
+        return activities.stream().map(this::mapToRecentActivityResponse).toList();
+    }
+
     private UpcomingDeadlineResponse mapToUpcomingDeadlineResponse(Task task) {
         UpcomingDeadlineResponse response = new UpcomingDeadlineResponse();
 
@@ -118,7 +122,15 @@ public class DashBoardServiceImpl implements DashBoardService{
     }
 
 
+    private RecentActivityResponse mapToRecentActivityResponse(Activity activity){
+        RecentActivityResponse response=new RecentActivityResponse();
+        response.setId(activity.getId());
+        response.setDescription(activity.getDescription());
+        response.setAction(activity.getAction());
+        response.setCreatedAt(activity.getCreatedAt());
 
+        return response;
+    }
 
 
 }

@@ -3,6 +3,7 @@ package com.devflow.backend.services;
 import com.devflow.backend.dto.CommentResponse;
 import com.devflow.backend.dto.CreateCommentRequest;
 import com.devflow.backend.dto.UpdateCommentRequest;
+import com.devflow.backend.entity.ActivityAction;
 import com.devflow.backend.entity.Comment;
 import com.devflow.backend.entity.Task;
 import com.devflow.backend.entity.User;
@@ -17,10 +18,12 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final CurrentUserService currentUserService;
+    private final ActivityService activityService;
 
-    public CommentServiceImpl(CommentRepository commentRepository, CurrentUserService currentUserService) {
+    public CommentServiceImpl(CommentRepository commentRepository, CurrentUserService currentUserService, ActivityService activityService) {
         this.commentRepository = commentRepository;
         this.currentUserService = currentUserService;
+        this.activityService = activityService;
     }
 
 
@@ -37,6 +40,8 @@ public class CommentServiceImpl implements CommentService{
         comment.setUpdatedAt(LocalDateTime.now());
 
         Comment savedComment=commentRepository.save(comment);
+
+        activityService.log(ActivityAction.COMMENT_ADDED,"Added comment to the"+ savedComment.getTask().getTitle());
 
 
         return mapToCommentResponse(savedComment);
@@ -61,12 +66,16 @@ public class CommentServiceImpl implements CommentService{
 
         Comment savedComment=commentRepository.save(comment);
 
+        activityService.log(ActivityAction.COMMENT_UPDATED,"Updated comment to the"+ savedComment.getTask().getTitle());
+
+
         return mapToCommentResponse(savedComment);
     }
 
     @Override
     public void deleteComment(Long commentId) {
         Comment comment=currentUserService.getCommentByIdAndAuthor(commentId);
+
         commentRepository.delete(comment);
     }
     private CommentResponse mapToCommentResponse(Comment comment) {

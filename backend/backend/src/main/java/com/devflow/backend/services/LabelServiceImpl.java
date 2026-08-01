@@ -3,10 +3,12 @@ package com.devflow.backend.services;
 import com.devflow.backend.dto.CreateLabelRequest;
 import com.devflow.backend.dto.LabelResponse;
 import com.devflow.backend.dto.UpdateLabelRequest;
+import com.devflow.backend.entity.ActivityAction;
 import com.devflow.backend.entity.Label;
 import com.devflow.backend.entity.Task;
 import com.devflow.backend.repository.LabelRepository;
 import com.devflow.backend.repository.TaskRepository;
+import org.apache.catalina.webresources.AbstractResource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,11 +18,13 @@ public class LabelServiceImpl implements LabelService{
     private final LabelRepository labelRepository;
     private final CurrentUserService currentUserService;
     private final TaskRepository taskRepository;
+    private final ActivityService activityService;
 
-    public LabelServiceImpl(LabelRepository labelRepository, CurrentUserService currentUserService, TaskRepository taskRepository) {
+    public LabelServiceImpl(LabelRepository labelRepository, CurrentUserService currentUserService, TaskRepository taskRepository, ActivityService activityService) {
         this.labelRepository = labelRepository;
         this.currentUserService = currentUserService;
         this.taskRepository = taskRepository;
+        this.activityService = activityService;
     }
 
     @Override
@@ -29,6 +33,8 @@ public class LabelServiceImpl implements LabelService{
         label.setTagName(request.getTagName());
         label.setOwner(currentUserService.getCurrentUser());
         Label savedLabel=labelRepository.save(label);
+
+
         return mapToLabelResponse(savedLabel);
     }
 
@@ -69,7 +75,10 @@ public class LabelServiceImpl implements LabelService{
         if (!task.getLabels().contains(label)) {
             task.getLabels().add(label);
         }
-        taskRepository.save(task);
+       Task savedTask=  taskRepository.save(task);
+
+        activityService.log(ActivityAction.LABEL_ADDED,label.getTagName()+" added to the"+ savedTask.getTitle());
+
         return mapToLabelResponse(label);
     }
 
@@ -79,7 +88,10 @@ public class LabelServiceImpl implements LabelService{
         Label label=currentUserService.getLabelByByIdAndOwner(labelId);
 
         task.getLabels().remove(label);
-        taskRepository.save(task);
+       Task savedTask= taskRepository.save(task);
+
+        activityService.log(ActivityAction.LABEL_REMOVED,label.getTagName()+" romoved from "+ savedTask.getTitle());
+
     }
 
     @Override
