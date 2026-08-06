@@ -4,8 +4,11 @@ import com.devflow.backend.dto.*;
 import com.devflow.backend.entity.*;
 import com.devflow.backend.repository.TaskRepository;
 import com.devflow.backend.repository.UserRepository;
+import com.devflow.backend.specification.TaskSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -113,6 +116,53 @@ public class TaskServiceImpl implements TaskService{
         return task.getMembers().stream().map(this::mapToMemberResponse).toList();
     }
 
+    @Override
+    public List<TaskResponse> searchTasks( Status status,
+                                           Priority priority,
+                                           Long projectId,
+                                           Long memberId,
+                                           Long labelId,
+                                           LocalDate dueDate,
+                                           String keyword) {
+        User owner = currentUserService.getCurrentUser();
+        Specification<Task> spec =
+                Specification.where(TaskSpecification.hasOwner(owner));
+
+        if (status != null) {
+            spec = spec.and(TaskSpecification.hasStatus(status));
+        }
+
+        if (priority != null) {
+            spec = spec.and(TaskSpecification.hasPriority(priority));
+        }
+
+        if (projectId != null) {
+            spec = spec.and(TaskSpecification.belongsToProject(projectId));
+        }
+
+        if (memberId != null) {
+            User member=currentUserService.getUserById(memberId);
+            spec = spec.and(TaskSpecification.hasMember(member));
+        }
+
+        if (labelId != null) {
+            Label label=currentUserService.getLabelByByIdAndOwner(labelId);
+            spec = spec.and(TaskSpecification.hasLabel(label));
+        }
+
+        if (dueDate != null) {
+            spec = spec.and(TaskSpecification.hasDueDate(dueDate));
+        }
+
+        if (keyword != null && !keyword.isBlank()) {
+            spec = spec.and(TaskSpecification.containsKeyword(keyword));
+        }
+
+        List<Task> tasks=taskRepository.findAll(spec);
+        return tasks.stream().map(this::mapToTaskResponse).toList();
+    }
+
+
 
     private TaskResponse mapToTaskResponse(Task task){
         TaskResponse taskResponse=new TaskResponse();
@@ -131,5 +181,7 @@ public class TaskServiceImpl implements TaskService{
         response.setEmail(user.getEmail());
         return response;
     }
+
+
 
 }

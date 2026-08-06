@@ -1,6 +1,8 @@
 package com.devflow.backend.controller;
 
 import com.devflow.backend.dto.*;
+import com.devflow.backend.entity.Priority;
+import com.devflow.backend.entity.Status;
 import com.devflow.backend.services.TaskService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import jakarta.validation.Valid;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -74,5 +77,35 @@ public class TaskController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/tasks/search")
+    public ResponseEntity<List<TaskResponse>> searchTasks(
+
+            @RequestParam(required = false) Status status,
+
+            @RequestParam(required = false) Priority priority,
+
+            @RequestParam(required = false) Long projectId,
+
+            @RequestParam(required = false) Long memberId,
+
+            @RequestParam(required = false) Long labelId,
+
+            @RequestParam(required = false) LocalDate dueDate,
+
+            @RequestParam(required = false) String keyword
+    ) {
+        System.out.println("SEARCH API HIT");
+        return ResponseEntity.ok(
+                taskService.searchTasks(
+                        status,
+                        priority,
+                        projectId,
+                        memberId,
+                        labelId,
+                        dueDate,
+                        keyword
+                )
+        );
+    }
 
 }
