@@ -1,11 +1,9 @@
 package com.devflow.backend.services;
 
-import com.devflow.backend.dto.CreateProjectRequest;
-import com.devflow.backend.dto.ProjectResponse;
-import com.devflow.backend.dto.RecentActivityResponse;
-import com.devflow.backend.dto.UpdateProjectRequest;
+import com.devflow.backend.dto.*;
 import com.devflow.backend.entity.ActivityAction;
 import com.devflow.backend.entity.Project;
+import com.devflow.backend.entity.ProjectInvitation;
 import com.devflow.backend.entity.User;
 import com.devflow.backend.repository.ActivityRepository;
 import com.devflow.backend.repository.ProjectRepository;
@@ -94,6 +92,7 @@ public class ProjectServiceImpl implements ProjectService{
 
     }
 
+
     private ProjectResponse mapToProjectResponse(Project project) {
 
         ProjectResponse response = new ProjectResponse();
@@ -109,5 +108,7 @@ public class ProjectServiceImpl implements ProjectService{
 
         return response;
     }
+
+
 
 }

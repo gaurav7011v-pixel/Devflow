@@ -1,6 +1,7 @@
 package com.devflow.backend.services;
 
 import com.devflow.backend.dto.CreateProjectRequest;
+import com.devflow.backend.dto.ProjectMemberResponse;
 import com.devflow.backend.dto.ProjectResponse;
 import com.devflow.backend.dto.UpdateProjectRequest;
 
@@ -12,5 +13,6 @@ public interface ProjectService {
     ProjectResponse getProjectById(Long id);
     ProjectResponse updateProject(Long id,UpdateProjectRequest request);
     void deleteProject(Long id);
+
 
 }

@@ -20,7 +20,6 @@ public class AuthController{
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request){
-        System.out.println("Inside register controller");
         userService.register(request);
        return ResponseEntity.ok("Registered");
     }

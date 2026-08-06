@@ -1,8 +1,7 @@
 package com.devflow.backend.controller;
 
-import com.devflow.backend.dto.CreateProjectRequest;
-import com.devflow.backend.dto.ProjectResponse;
-import com.devflow.backend.dto.UpdateProjectRequest;
+import com.devflow.backend.dto.*;
+import com.devflow.backend.services.ProjectInvitationService;
 import com.devflow.backend.services.ProjectService;
 import com.devflow.backend.services.ProjectServiceImpl;
 import jakarta.validation.Valid;
@@ -17,9 +16,11 @@ import java.util.List;
 @CrossOrigin
 public class ProjectController {
     private final ProjectService projectService;
+    private final ProjectInvitationService projectInvitationService;
 
-    public ProjectController(ProjectServiceImpl projectService) {
+    public ProjectController(ProjectServiceImpl projectService, ProjectInvitationService projectInvitationService) {
         this.projectService = projectService;
+        this.projectInvitationService = projectInvitationService;
     }
 
     @PostMapping("/projects")
@@ -50,4 +51,39 @@ public class ProjectController {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/projects/{projectId}/invite/{userId}")
+    public ResponseEntity<ProjectInvitationResponse> sendInvitation(@PathVariable Long projectId,@PathVariable Long userId){
+        ProjectInvitationResponse response=projectInvitationService.sendInvitation(projectId,userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/invitations")
+    public ResponseEntity<List<ProjectInvitationResponse>> getMyInvitations() {
+        return ResponseEntity.ok(projectInvitationService.getMyInvitations());
+    }
+
+    @PostMapping("/invitations/{id}/accept")
+    public ResponseEntity<ProjectInvitationResponse> acceptInvitation(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                projectInvitationService.acceptInvitation(id)
+        );
+    }
+
+    @GetMapping("/projects/{id}/members")
+    public ResponseEntity<List<ProjectMemberResponse>> getMembers(@PathVariable Long id){
+        return ResponseEntity.ok(projectInvitationService.getProjectMembers(id));
+    }
+
+    @PostMapping("/invitations/{id}/reject")
+    public ResponseEntity<ProjectInvitationResponse> rejectInvitation(
+            @PathVariable Long id){
+
+        return ResponseEntity.ok(
+                projectInvitationService.rejectInvitation(id)
+        );
+    }
+
 }

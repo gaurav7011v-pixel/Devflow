@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -39,4 +43,12 @@ public class Project {
 
     @ManyToOne
     private User owner;
+
+    @ManyToMany
+    @JoinTable(
+            name = "project_members",
+            joinColumns=@JoinColumn(name="project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    Set<User> projectMembers=new HashSet<>();
 }

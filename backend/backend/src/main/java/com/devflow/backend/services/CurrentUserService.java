@@ -16,14 +16,16 @@ public class CurrentUserService {
     private final CommentRepository commentRepository;
     private final CheckListRepository checkListRepository;
     private final LabelRepository labelRepository;
+    private final ProjectInvitationRepository projectInvitationRepository;
 
-    public CurrentUserService(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentRepository commentRepository, CheckListRepository checkListRepository, LabelRepository labelRepository) {
+    public CurrentUserService(UserRepository userRepository, ProjectRepository projectRepository, TaskRepository taskRepository, CommentRepository commentRepository, CheckListRepository checkListRepository, LabelRepository labelRepository, ProjectInvitationRepository projectInvitationRepository) {
         this.userRepository = userRepository;
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.commentRepository = commentRepository;
         this.checkListRepository = checkListRepository;
         this.labelRepository = labelRepository;
+        this.projectInvitationRepository = projectInvitationRepository;
     }
 
     public User getCurrentUser(){
@@ -69,5 +71,12 @@ public class CurrentUserService {
     }
     public User getUserById(Long userId){
         return userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+    }
+
+    public ProjectInvitation getInvitationByIdAndReceiver(Long invitationId){
+        User currentUser=getCurrentUser();
+        return projectInvitationRepository
+                .findByIdAndReceiver(invitationId,currentUser)
+                .orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 }

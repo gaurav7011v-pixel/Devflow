@@ -40,4 +40,7 @@ public class User {
     @ManyToMany(mappedBy = "members")
     private List<Task> assignedTasks=new ArrayList<>();
 
+    @ManyToMany(mappedBy = "projectMembers")
+    private List<Project> assignedProject=new ArrayList<>();
+
 }

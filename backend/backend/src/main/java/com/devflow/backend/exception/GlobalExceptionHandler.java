@@ -80,5 +80,35 @@ public class GlobalExceptionHandler {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(ProjectInvitationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleInvitationNotFound(ProjectInvitationNotFoundException exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(InvitationAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleInvitationAlreadyExists(InvitationAlreadyExistsException exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(InvitationAlreadyProcessedException.class)
+    public ResponseEntity<ErrorResponse> handleInvitationAlreadyProcessed(InvitationAlreadyProcessedException exception){
+        ErrorResponse errorResponse=new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setTimeStamp(LocalDateTime.now());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
 }
 
