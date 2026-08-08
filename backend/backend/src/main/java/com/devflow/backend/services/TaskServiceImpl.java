@@ -3,7 +3,6 @@ package com.devflow.backend.services;
 import com.devflow.backend.dto.*;
 import com.devflow.backend.entity.*;
 import com.devflow.backend.repository.TaskRepository;
-import com.devflow.backend.repository.UserRepository;
 import com.devflow.backend.specification.TaskSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -162,6 +161,20 @@ public class TaskServiceImpl implements TaskService{
         return tasks.stream().map(this::mapToTaskResponse).toList();
     }
 
+    @Override
+    public List<CalenderEventResponse> calenderEvents() {
+        User owner=currentUserService.getCurrentUser();
+        List<Task> tasks=taskRepository.findByProjectOwnerAndDueDateIsNotNull(owner);
+
+        return tasks.stream().map(this::mapToCalenderEventResponse).toList();
+    }
+
+    @Override
+    public List<CalenderEventResponse> calenderEventsBetween(LocalDate from, LocalDate to) {
+        User user=currentUserService.getCurrentUser();
+        List<Task> tasks=taskRepository.findByProjectOwnerAndDueDateBetween(user,from,to);
+        return tasks.stream().map(this::mapToCalenderEventResponse).toList();
+    }
 
 
     private TaskResponse mapToTaskResponse(Task task){
@@ -179,6 +192,19 @@ public class TaskServiceImpl implements TaskService{
         response.setId(user.getId());
         response.setName(user.getName());
         response.setEmail(user.getEmail());
+        return response;
+    }
+
+    private CalenderEventResponse mapToCalenderEventResponse(Task task){
+        CalenderEventResponse response=new CalenderEventResponse();
+        response.setId(task.getId());
+        response.setTitle(task.getTitle());
+        response.setDate(task.getDueDate());
+        response.setStatus(task.getStatus());
+        response.setPriority(task.getPriority());
+        response.setProjectId(task.getProject().getId());
+        response.setProjectName(task.getProject().getName());
+
         return response;
     }
 

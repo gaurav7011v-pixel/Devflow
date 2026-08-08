@@ -8,7 +8,9 @@ import com.devflow.backend.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DashBoardServiceImpl implements DashBoardService{
@@ -27,14 +29,19 @@ public class DashBoardServiceImpl implements DashBoardService{
     public DashboardSummaryResponse getDashboardSummary(){
         User currentUser=currentUserService.getCurrentUser();
         Long totalProjects=projectRepository.countByOwner(currentUser);
-        Long totalTasks=taskRepository.countByProjectOwner(currentUser);
-        Long completedTasks=taskRepository.countByProjectOwnerAndStatus(currentUser, Status.COMPLETED);
+        Long completedTasks=taskRepository.countByProjectOwnerAndStatus(currentUser,Status.COMPLETED);
         Long inProgressTasks=taskRepository.countByProjectOwnerAndStatus(currentUser,Status.IN_PROGRESS);
+        List<Project> projects=projectRepository.findByOwner(currentUser);
+        Set<User> members=new HashSet<>();
+        for(Project project:projects){
+            members.addAll(project.getProjectMembers());
+        }
+           long teamMembers=members.size();
 
         return new DashboardSummaryResponse(
                 totalProjects,
-                totalTasks,
                 completedTasks,
+                teamMembers,
                 inProgressTasks
         );
     }

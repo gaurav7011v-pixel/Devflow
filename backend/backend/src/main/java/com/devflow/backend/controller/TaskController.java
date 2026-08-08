@@ -108,4 +108,13 @@ public class TaskController {
         );
     }
 
+    @GetMapping("/calender/events")
+    public ResponseEntity<List<CalenderEventResponse>> calenderEvents(){
+        return ResponseEntity.ok(taskService.calenderEvents());
+    }
+
+    @GetMapping("/calender/event")
+    public ResponseEntity<List<CalenderEventResponse>> calenderEventsBetween(@RequestParam LocalDate from,@RequestParam LocalDate to){
+        return ResponseEntity.ok(taskService.calenderEventsBetween(from,to));
+    }
 }

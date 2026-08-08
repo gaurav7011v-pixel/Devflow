@@ -53,4 +53,6 @@ public class TaskSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("dueDate"),dueDate);
     }
+
+
 }

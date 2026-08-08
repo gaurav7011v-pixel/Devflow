@@ -1,6 +1,7 @@
 package com.devflow.backend.repository;
 
 import com.devflow.backend.entity.*;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -20,10 +21,15 @@ public interface TaskRepository extends JpaRepository<Task,Long> , JpaSpecificat
             User owner, Status status
             , LocalDate today
             );
-//    List<Task> findByProjectOwnerAndStatus(User user,Status status);
-//    List<Task> findByProjectOwnerAndPriority(User user, Priority priority);
-//    List<Task> findByProjectOwner(User user);
-//    List<Task> findByProjectOwnerAndStatusAndPriority(User user,Status status,Priority priority);
-//    List<Task> findByProjectOwnerAndProject(User user,Project project);
+
+    List<Task> findByProjectOwnerAndDueDateIsNotNull(User owner);
+
+    List<Task> findByProjectOwnerAndDueDateBetween(
+            User owner,
+            LocalDate from,
+            LocalDate to
+    );
 }
+
+
 

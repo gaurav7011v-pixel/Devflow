@@ -3,6 +3,7 @@ package com.devflow.backend.services;
 import com.devflow.backend.dto.*;
 import com.devflow.backend.entity.Priority;
 import com.devflow.backend.entity.Status;
+import com.devflow.backend.entity.Task;
 
 
 import java.time.LocalDate;
@@ -32,5 +33,9 @@ public interface TaskService {
                                      Long labelId,
                                      LocalDate dueDate,
                                      String keyword);
+
+
+     List<CalenderEventResponse> calenderEvents();
+     List<CalenderEventResponse> calenderEventsBetween(LocalDate from,LocalDate to);
 
 }
