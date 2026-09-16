@@ -9,11 +9,13 @@ import files from "../assets/images/files.svg"
 import statistics from "../assets/images/statistics.svg"
 import settings from "../assets/images/settings.svg"
 import add from "../assets/images/add.svg"
+import { useNavigate } from 'react-router-dom'
 const Sidebar = () => {
+  const navigate=useNavigate();
   return (
-    <div className="w-64 h-screen bg-white shadow-sm p-5 flex flex-col">
+    <aside className="fixed top-0 left-0 w-64 h-screen bg-white shadow-sm p-5 flex flex-col">
 
-      <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-100 text-blue-600 font-semibold">
+      <div className=" flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-100 text-blue-600 font-semibold">
         <img className='w-5' src={home} alt="" />
         <h1>Dashboard</h1>
       </div>
@@ -21,7 +23,7 @@ const Sidebar = () => {
         <img className='w-5' src={projects} alt="" />
         <h1>Projects</h1>
       </div>
-       <div className='flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer hover:bg-gray-100 transition'>
+       <div onClick={()=>navigate("/tasks")} className='flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer hover:bg-gray-100 transition'>
         <img className='w-5' src={tasks} alt="" />
         <h1>Tasks</h1>
       </div>
@@ -54,7 +56,7 @@ const Sidebar = () => {
         <h1>New Project</h1>
       </div>
 
-    </div>
+    </aside>
   )
 }
 

@@ -2,6 +2,7 @@ package com.devflow.backend.services;
 
 import com.devflow.backend.dto.*;
 import com.devflow.backend.entity.*;
+import com.devflow.backend.repository.ProjectRepository;
 import com.devflow.backend.repository.TaskRepository;
 import com.devflow.backend.specification.TaskSpecification;
 import org.springframework.data.jpa.domain.Specification;
@@ -9,23 +10,28 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TaskServiceImpl implements TaskService{
     private final TaskRepository taskRepository;
     private final CurrentUserService currentUserService;
     private final ActivityService activityService;
+    private final ProjectRepository projectRepository;
 
-    public TaskServiceImpl(TaskRepository taskRepository, CurrentUserService currentUserService, ActivityService activityService) {
+    public TaskServiceImpl(TaskRepository taskRepository, CurrentUserService currentUserService, ActivityService activityService, ProjectRepository projectRepository) {
         this.taskRepository = taskRepository;
         this.currentUserService = currentUserService;
         this.activityService = activityService;
+        this.projectRepository = projectRepository;
     }
 
     @Override
     public TaskResponse createTask(Long projectId,CreateTaskRequest taskRequest) {
         Task task=new Task();
+        User currentUser=currentUserService.getCurrentUser();
         Project project = currentUserService.getProjectByIdAndOwner(projectId);
         task.setProject(project);
         task.setTitle(taskRequest.getTitle());
@@ -35,6 +41,7 @@ public class TaskServiceImpl implements TaskService{
         task.setDueDate(taskRequest.getDueDate());
         task.setCreatedAt(LocalDateTime.now());
         task.setUpdatedAt(LocalDateTime.now());
+        task.setCreatedBy(currentUser);
 
         Task savedTask=taskRepository.save(task);
 
@@ -122,7 +129,8 @@ public class TaskServiceImpl implements TaskService{
                                            Long memberId,
                                            Long labelId,
                                            LocalDate dueDate,
-                                           String keyword) {
+                                           String keyword,
+                                           String taskTab) {
         User owner = currentUserService.getCurrentUser();
         Specification<Task> spec =
                 Specification.where(TaskSpecification.hasOwner(owner));
@@ -157,6 +165,17 @@ public class TaskServiceImpl implements TaskService{
             spec = spec.and(TaskSpecification.containsKeyword(keyword));
         }
 
+        if (taskTab != null) {
+
+            if (taskTab.equals("CREATED_BY_ME")) {
+                spec = spec.and(TaskSpecification.createdBy(owner));
+            }
+
+            if (taskTab.equals("MY_TASKS")) {
+                spec = spec.and(TaskSpecification.hasMember(owner));
+            }
+        }
+
         List<Task> tasks=taskRepository.findAll(spec);
         return tasks.stream().map(this::mapToTaskResponse).toList();
     }
@@ -176,6 +195,17 @@ public class TaskServiceImpl implements TaskService{
         return tasks.stream().map(this::mapToCalenderEventResponse).toList();
     }
 
+    @Override
+    public List<MemberResponse> allMembers() {
+        User owner=currentUserService.getCurrentUser();
+        List<Project> projects=projectRepository.findByOwner(owner);
+        Set<User> members=new HashSet<>();
+        for(Project project:projects){
+            members.addAll(project.getProjectMembers());
+        }
+        return members.stream().map(this::mapToMemberResponse).toList();
+    }
+
 
     private TaskResponse mapToTaskResponse(Task task){
         TaskResponse taskResponse=new TaskResponse();
@@ -185,6 +215,14 @@ public class TaskServiceImpl implements TaskService{
         taskResponse.setStatus(task.getStatus());
         taskResponse.setPriority(task.getPriority());
         taskResponse.setDueDate(task.getDueDate());
+        taskResponse.setProjectName(task.getProject().getName());
+        taskResponse.setAssigneeName(
+                task.getMembers()
+                        .stream()
+                        .findFirst()
+                        .map(User::getName)
+                        .orElse("No assignee")
+        );
         return taskResponse;
     }
     private MemberResponse mapToMemberResponse(User user){

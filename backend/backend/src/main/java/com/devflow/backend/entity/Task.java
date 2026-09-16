@@ -26,6 +26,7 @@ public class Task {
     private String description;
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 50)
     private Status status;
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -50,4 +51,8 @@ public class Task {
             inverseJoinColumns=@JoinColumn(name="user_id")
     )
     private List<User> members =new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name="created_by")
+    private User createdBy;
 }

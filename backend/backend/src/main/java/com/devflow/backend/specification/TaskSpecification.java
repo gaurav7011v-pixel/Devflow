@@ -30,7 +30,6 @@ public class TaskSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.isMember(member,root.get("members"));
     }
-
     public static Specification<Task> hasLabel(Label label){
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.isMember(label,root.get("labels"));
@@ -53,6 +52,13 @@ public class TaskSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("dueDate"),dueDate);
     }
+
+    public static Specification<Task> createdBy(User user) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("createdBy"), user);
+    }
+
+
 
 
 }

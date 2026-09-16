@@ -11,12 +11,14 @@ const Login = () => {
   const [showPass, setShowPass] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading,setLoading]=useState(false);
 
 
   const handlePassword = () => {
     setShowPass(prev => !prev);
   }
 
+  
   const handleSubmit = async(e) => {
     e.preventDefault();
     const data={
@@ -24,14 +26,17 @@ const Login = () => {
       password
     }
     try{
+      setLoading(true);
        const response = await login(data);
-       alert(response.data.message)
+   
     localStorage.setItem( "token",response.data.token)
     navigate("/dashboard")
     console.log(localStorage.getItem("token"));
     }
     catch(error){
-      alert(error.response.data.message)
+      alert(error.response?.data?.message||"Login failed");
+    }finally{
+      setLoading(false);
     }
 
    
@@ -74,9 +79,12 @@ const Login = () => {
           </div>
         </div>
 
-        <button className='w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition'
+        <button
+        type='submit'
+        disabled={loading}
+        className='w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition'
         >
-          Sign In
+          {loading?"Signing in...":"Sign In"}
         </button>
 
         <div className='mb-6 mt-3'>If you don't have an account? <Link to={"/register"} className='text-blue-500 hover:underline'>Sign Up</Link> </div>

@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
 public class DashBoardController {
    private final DashBoardService dashBoardService;
 

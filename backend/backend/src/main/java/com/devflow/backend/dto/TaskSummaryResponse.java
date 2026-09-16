@@ -8,10 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskSummaryResponse {
-    private Long todo;
-    private Long pending;
-    private Long completed;
-    private Long inProgress;
+    private Long todo;        // 1st
+    private Long completed;   // 2nd
+    private Long inProgress;  // 3rd
+    private Long pending;     // 4th
     private Long blocked;
-    private Integer completionRate;
 }

@@ -77,7 +77,7 @@ public class TaskController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/tasks/search")
+    @GetMapping("/tasks/search") 
     public ResponseEntity<List<TaskResponse>> searchTasks(
 
             @RequestParam(required = false) Status status,
@@ -92,9 +92,10 @@ public class TaskController {
 
             @RequestParam(required = false) LocalDate dueDate,
 
-            @RequestParam(required = false) String keyword
+            @RequestParam(required = false) String keyword,
+
+            @RequestParam(required = false) String taskTab
     ) {
-        System.out.println("SEARCH API HIT");
         return ResponseEntity.ok(
                 taskService.searchTasks(
                         status,
@@ -103,7 +104,8 @@ public class TaskController {
                         memberId,
                         labelId,
                         dueDate,
-                        keyword
+                        keyword,
+                        taskTab
                 )
         );
     }
@@ -116,5 +118,10 @@ public class TaskController {
     @GetMapping("/calender/event")
     public ResponseEntity<List<CalenderEventResponse>> calenderEventsBetween(@RequestParam LocalDate from,@RequestParam LocalDate to){
         return ResponseEntity.ok(taskService.calenderEventsBetween(from,to));
+    }
+
+    @GetMapping("/all_Members")
+    public ResponseEntity<List<MemberResponse>> allMembers(){
+        return ResponseEntity.ok(taskService.allMembers());
     }
 }

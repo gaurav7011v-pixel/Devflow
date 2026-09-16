@@ -62,21 +62,12 @@ public class DashBoardServiceImpl implements DashBoardService{
         Long pending=taskRepository.countByProjectOwnerAndStatus(currentUser,Status.PENDING);
         Long blocked=taskRepository.countByProjectOwnerAndStatus(currentUser,Status.BLOCKED);
 
-        long totalTasks = todo + inProgress +pending+ completed + blocked;
-
-        int completionPercentage = 0;
-
-        if (totalTasks > 0) {
-            completionPercentage = (int) ((completed * 100) / totalTasks);
-        }
-
         return new TaskSummaryResponse(
                 todo,
                 completed,
                 inProgress,
                 pending,
-                blocked,
-                completionPercentage
+                blocked
         ) ;
     }
 

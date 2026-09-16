@@ -32,10 +32,12 @@ public interface TaskService {
                                      Long memberId,
                                      Long labelId,
                                      LocalDate dueDate,
-                                     String keyword);
+                                     String keyword,
+                                     String taskTab);
 
 
      List<CalenderEventResponse> calenderEvents();
      List<CalenderEventResponse> calenderEventsBetween(LocalDate from,LocalDate to);
+     List<MemberResponse> allMembers();
 
 }
