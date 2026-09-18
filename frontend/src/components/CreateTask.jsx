@@ -2,7 +2,7 @@ import React from "react";
 import useDashBoardProjects from "../hooks/useDashBoardProjects";
 import useAllMembers from "../hooks/useAllMembers";
 import { useState } from "react";
-import { createTask } from "../services/DashBoardServices";
+import { assignMemberToTask, createTask } from "../services/DashBoardServices";
 const CreateTask = ({ onClose }) => {
     const { projects } = useDashBoardProjects();
     const { members } = useAllMembers();
@@ -54,6 +54,13 @@ const CreateTask = ({ onClose }) => {
             formData.projectId,
             taskData
         );
+
+        if(formData.memberId){
+            await assignMemberToTask(
+                createdTask.id,
+                formData.memberId
+            )
+        }
 
         console.log("Task created:", createdTask);
 
@@ -253,6 +260,8 @@ const CreateTask = ({ onClose }) => {
                          bg-white text-sm text-gray-700 outline-none
                          focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
+                            <option value="">Select assignee</option>
+                            
                             {(members || []).map((member) => (
                                 <option key={member.id} value={member.id}>
                                     {member.name}

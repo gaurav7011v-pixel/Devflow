@@ -85,3 +85,11 @@ export const createTask = async (projectId, taskData) => {
 
   return response.data;
 }
+
+export const assignMemberToTask=async (taskId,userId)=>{
+    const response =await api.post(
+     `/tasks/${taskId}/members/${userId}`
+    )
+
+    return response.data;
+}

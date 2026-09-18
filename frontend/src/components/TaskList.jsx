@@ -359,7 +359,7 @@ const TaskRow = ({ task }) => {
           ) : task.assigneeName ? (
 
             <div
-              className="w-10o h-8 rounded-sm bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-semibold"
+              className="w-30 h-8 rounded-sm bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-semibold"
               title={task.assigneeName}
             >
               {task.assigneeName}
