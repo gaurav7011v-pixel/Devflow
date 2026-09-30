@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useState, useCallback } from "react";
 import { getTasks } from "../services/DashBoardServices";
 
 const useTasks = (filters) => {
@@ -7,32 +8,27 @@ const useTasks = (filters) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
+    const fetchTasks = useCallback(async () => {
 
-        const fetchTasks = async () => {
+        try {
+            setLoading(true);
+            setError(null);
 
-            try {
-                setLoading(true);
-                setError(null);
+            const data = await getTasks(filters);
 
-                const data = await getTasks(filters);
+            setTasks(data);
 
-                setTasks(data);
+        } catch (error) {
 
-            } catch (error) {
+            console.error("Failed to load tasks:", error);
 
-                console.error("Failed to load tasks:", error);
+            setError(error);
 
-                setError(error);
+        } finally {
 
-            } finally {
+            setLoading(false);
 
-                setLoading(false);
-
-            }
-        };
-
-        fetchTasks();
+        }
 
     }, [
         filters.keyword,
@@ -41,13 +37,20 @@ const useTasks = (filters) => {
         filters.projectId,
         filters.memberId,
         filters.dueDate,
+        filters.taskTab,
     ]);
+
+    useEffect(() => {
+        fetchTasks();
+    }, [fetchTasks]);
 
     return {
         tasks,
         loading,
         error,
+        refetch: fetchTasks,
     };
 };
 
 export default useTasks;
+

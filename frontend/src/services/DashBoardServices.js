@@ -93,3 +93,24 @@ export const assignMemberToTask=async (taskId,userId)=>{
 
     return response.data;
 }
+
+export const getTaskById=async(taskId)=>{
+    const response=await api.get(
+     `/tasks/${taskId}`
+    );
+    return response.data;
+}
+
+export const updateTask=async(taskId,formData)=>{
+    const response=await api.put(
+        `/tasks/${taskId}`,
+        formData
+    );
+    return response.data;
+}
+
+export const deleteTask=async(taskId)=>{
+    await api.delete(
+    `/tasks/${taskId}`
+    );
+}

@@ -18,7 +18,9 @@ public class TaskResponse {
     private Status status;
     private Priority priority;
     private LocalDate dueDate;
+    private Long projectId;
     private String projectName;
+    private Long assigneeId;
     private String assigneeName;
 
 }

@@ -52,10 +52,22 @@ public class TaskServiceImpl implements TaskService{
     @Override
     public TaskResponse updateTask(Long id,UpdateTaskRequest taskRequest) {
         Task task=currentUserService.getTaskByIdAndOwner(id);
-        task.setTitle(taskRequest.getTitle());
-        task.setDescription(taskRequest.getDescription());
-        task.setStatus(taskRequest.getStatus());
-        task.setPriority(taskRequest.getPriority());
+        if (taskRequest.getTitle() != null) {
+            task.setTitle(taskRequest.getTitle());
+        }
+
+        if(taskRequest.getDescription()!=null){
+            task.setDescription(taskRequest.getDescription());
+
+        }
+
+        if(taskRequest.getStatus()!=null){
+            task.setStatus(taskRequest.getStatus());
+        }
+
+        if(taskRequest.getPriority()!=null) {
+            task.setPriority(taskRequest.getPriority());
+        }
         task.setDueDate(taskRequest.getDueDate());
         task.setUpdatedAt(LocalDateTime.now());
 
@@ -86,7 +98,7 @@ public class TaskServiceImpl implements TaskService{
         Task task=currentUserService.getTaskByIdAndOwner(id);
         taskRepository.delete(task);
 
-        activityService.log(ActivityAction.TASK_DELETED,currentUserService.getCurrentUser()+" deleted"+task.getTitle());
+//        activityService.log(ActivityAction.TASK_DELETED,currentUserService.getCurrentUser()+" deleted"+task.getTitle());
 
     }
 
@@ -215,7 +227,9 @@ public class TaskServiceImpl implements TaskService{
         taskResponse.setStatus(task.getStatus());
         taskResponse.setPriority(task.getPriority());
         taskResponse.setDueDate(task.getDueDate());
+        taskResponse.setProjectId(task.getProject().getId());
         taskResponse.setProjectName(task.getProject().getName());
+        taskResponse.setAssigneeId(task.getMembers().stream().findFirst().map(User::getId).orElse(null));
         taskResponse.setAssigneeName(
                 task.getMembers()
                         .stream()

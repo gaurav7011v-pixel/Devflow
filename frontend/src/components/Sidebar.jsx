@@ -19,7 +19,7 @@ const Sidebar = () => {
         <img className='w-5' src={home} alt="" />
         <h1>Dashboard</h1>
       </div>
-       <div className='flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer hover:bg-gray-100 transition'>
+       <div onClick={()=>navigate("/projects")} className='flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer hover:bg-gray-100 transition'>
         <img className='w-5' src={projects} alt="" />
         <h1>Projects</h1>
       </div>

@@ -5,6 +5,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import TaskMainCom from './components/TaskMainCom'
+import ProjectContents from './components/ProjectContents'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/login" element={<Login/>}/>
       <Route path="/register" element={<Register/>}/>
       <Route path="/tasks" element={<TaskMainCom/>}/>
+      <Route path="/projects" element={<ProjectContents/>}/>
      </Routes>
     </>
   )

@@ -14,13 +14,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UpdateTaskRequest {
-    @NotBlank
     private String title;
-    @NotBlank
     private String description;
-    @NotNull
     private Status status;
-    @NotNull
     private Priority priority;
     private LocalDate dueDate;
+
 }
